@@ -4,24 +4,26 @@ import './Signup.css';
 import { FirebaseContext } from '../../store/FirebaseContext';
 import { useHistory ,Link} from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { Form, Button } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 
 export default function Signup() {
-
-
 
   const {firebase} = useContext(FirebaseContext)
   const history = useHistory()
   const { register, handleSubmit, formState: { errors } } = useForm();
   const onSubmit =(data)=>{
     console.log(data);
+    // console.log('try');
     firebase.auth().createUserWithEmailAndPassword(data.email,data.passWord).then((result)=>{
+      // console.log('powli');
       result.user.updateProfile({displayName:data.name}).then(()=>{
+        // console.log('vannu');
         firebase.firestore().collection('users').add({
           id:result.user.uid,
           username:data.name,
           phone:data.phone
         }).then(()=>{
+          // console.log('jagajaga')
           history.push('/login')
         })
       })
@@ -31,7 +33,7 @@ export default function Signup() {
   return (
     <div>
       <div className="signupParentDiv">
-        <img width="200px" height="200px" src={Logo}></img>
+        <img width="200px" height="200px" src={Logo} alt='logo'></img>
         <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Field>
           <label htmlFor="fname">Username</label>
@@ -90,7 +92,7 @@ export default function Signup() {
             type="password"
             id="lname"
             name="password"
-            {...register("passWord",{ required: true, maxLength: 10 })}
+            {...register("passWord",{ required: true, maxLength: 6 })}
 
           />
                     </Form.Field>
